@@ -1,0 +1,123 @@
+<html>
+
+<head>
+    <script src="game.js"></script>
+    <script>
+        // this can easily be changed to display a nice report in this page
+        const assert ={
+            true:(value, message)=> {
+                if (value) {
+                    console.log('Test PASSED ('+message+')');
+                } else {
+                    console.warn('Test FAILED');
+                    alert(message);
+                    throw new Error(message);
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <script>
+        // Arrange
+        const game = new Game();
+        // Act
+        let anyError = null;
+        try {
+            game.init();
+        } catch(error) {
+            anyError = error;
+        }
+        // Assert
+        assert.true(anyError!=null,'Expected the init method of a Game class to fail if run with no parameters ('+anyError+')');
+    </script>
+
+    <script>
+        // Arrange
+        const mockDoc = {
+            addEventListener:function() {
+            }
+        };
+        const game2 = new Game();
+        // Act
+        let anyError2 = null;
+        try {
+            game2.init(mockDoc);
+        } catch(error) {
+            anyError2 = error;
+        }
+        // Assert
+        assert.true(anyError2==null,'Expected the init method of a Game class to not fail if run with correct parameters ('+anyError2+')');
+    </script>
+
+    <script>
+        // Arrange
+        const mockDoc3 = {
+            testData : {},
+            addEventListener:function(eventName,eventHandler) {
+                this.testData.eventName = eventName;
+                this.onLoad = eventHandler;
+            },
+            getElementsByTagName:function(tagName) {
+                this.testData.tagName = tagName;
+                return [this.mockBoard];
+            },
+            mockBoard: {
+                setChoiceHandler:function(handler) {
+                    this.choiceHandler=handler;
+                }
+            }
+        };
+        const game3 = new Game();
+        // Act
+        let anyError3 = null;
+        try {
+            game3.init(mockDoc3);
+        } catch(error) {
+            anyError3 = error;
+        }
+        Math = {
+            random:function() {
+                return 0.4;    
+            },
+            floor:function(x) { return x; },
+            round:function(x) { return x; },
+            pow:function(x,p) { if (p==1) return x; else throw new Error('Expected 1 as the exponent, not '+p); }
+        };
+        Color = {
+            index:0,
+            new:function(value) {
+                return {
+                    val: value,
+                    equals: function(x) { return x.val==this.val; },
+                    complement: function() { return Color.new(1000-this.val); }
+                };
+            },
+            random:function() {
+                this.index++;
+                return Color.new(this.index*10);
+            }
+        }
+        mockDoc3.onLoad();
+        mockDoc3.mockBoard.choiceHandler(3);
+        // Assert
+        assert.true(anyError3==null,'Expected the init method of a Game class to not fail if run with correct parameters ('+anyError3+')');
+        assert.true(mockDoc3.testData.eventName==='DOMContentLoaded','DOMContentLoaded was not handled!');
+        assert.true(mockDoc3.testData.tagName==='complementary-board','Game is not looking for a complementary-board element');
+        assert.true(game3._roundData.guideColor.val === 10,'Guide color object expected to have val=10 ('+JSON.stringify(game3._roundData.guideColor)+')');
+        assert.true(game3._roundData.tries.size === 1,'Expected 1 unsuccessful try ('+JSON.stringify(game3._roundData.tries)+')');
+        assert.true(game3._roundData.tries.has(3),'Expected unsuccessful try with value of 3 ('+JSON.stringify(game3._roundData.tries)+')');
+        assert.true(game3._log.length === 0,'Expected no score after one unsuccessful try ('+JSON.stringify(game3._log)+')');
+        // Act 2 (heh!)
+        mockDoc3.mockBoard.choiceHandler(2);
+        // Assert 2
+        assert.true(game3._roundData.guideColor.val === 60,'Guide color object expected to have val=60 ('+JSON.stringify(game3._roundData.guideColor)+')');
+        assert.true(game3._roundData.tries.size === 0,'Expected no unsuccessful tries after correct response ('+JSON.stringify(game3._roundData.tries)+')');
+        assert.true(game3._log.length === 1,'Expected one item of score after correct answer ('+JSON.stringify(game3._log)+')');
+        assert.true(game3._log[0] === 50,'Expected 50 as the score after one fail and one correct answer ('+JSON.stringify(game3._log)+')');
+        
+    </script>
+</body>
+
+</html>

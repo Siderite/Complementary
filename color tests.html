@@ -1,0 +1,57 @@
+<html>
+
+<head>
+    <script src="color.js"></script>
+    <script>
+        // this can easily be changed to display a nice report in this page
+        const assert ={
+            true:(value, message)=> {
+                if (value) {
+                    console.log('Test PASSED ('+message+')');
+                } else {
+                    console.warn('Test FAILED');
+                    alert(message);
+                    throw new Error(message);
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <script>
+        // Arrange
+        const color1 = new Color(123);
+        const color2 = new Color(123);
+        const color3 = new Color(234);
+        // Act
+        const equalsWorks = color1.equals(color2);
+        const notEqualsWorks = !color1.equals(color3);
+        // Assert
+        assert.true(equalsWorks,'Expected two colors initialized with the same value to be equal');
+        assert.true(notEqualsWorks,'Expected two colors initialized with different values not to be equal');
+    </script>
+
+    <script>
+        // Arrange
+        const color = new Color();
+        const doubleInvertedColor = color.complement().complement();
+        // Act
+        const complementAndEqualsWork = color.equals(doubleInvertedColor);
+        // Assert
+        assert.true(complementAndEqualsWork,'Expected the complementary or a complementary color to be the original color');
+    </script>
+
+    <script>
+        // Arrange
+        const acolor = new Color(0x6789AB);
+        const stringColor = acolor.toString();
+        // Act
+        const toStringWorks = stringColor==='#6789ab';
+        // Assert
+        assert.true(toStringWorks,'Expected the HTML representation of the color to be #6789ab and it was '+stringColor);
+    </script>
+
+</body>
+
+</html>
