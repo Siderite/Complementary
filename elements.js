@@ -73,7 +73,7 @@ class Score extends HTMLElement {
     constructor(value) {
         super();
         this.innerText = value;
-        this.className = value > 50
+        this.className = value >= 50
             ? 'good'
             : 'bad';
     }
