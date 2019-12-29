@@ -1,0 +1,50 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+}
+complementary-board {
+    width:100%;
+    height:100%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: min-content auto;
+}
+complementary-scores {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+complementary-score {
+    display: inline-block;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: darkgray;
+    margin-left: 2px;
+}
+complementary-score.good {
+    background-color: darkgreen;
+}
+complementary-score.bad {
+    background-color: red;
+}
+complementary-guide-color {
+    grid-column: 1;
+    grid-row: 2;
+}
+complementary-choice-colors {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+}
+complementary-choice-color {
+    flex-grow: 1;
+    cursor: pointer;
+}
+complementary-choice-color[data-result=false] {
+    opacity: 0.3;
+}
